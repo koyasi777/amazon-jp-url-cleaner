@@ -1,28 +1,28 @@
 // ==UserScript==
-// @name         Amazon.co.jp 商品URLクリーナー 🔗🧹
-// @name:ja      Amazon.co.jp 商品URLクリーナー 🔗🧹
-// @name:en      Amazon.co.jp Product URL Cleaner 🔗🧹
-// @name:zh-CN   Amazon.co.jp 商品链接清理器 🔗🧹
-// @name:zh-TW   Amazon.co.jp 商品連結清理器 🔗🧹
-// @name:ko      Amazon.co.jp 상품 URL 클리너 🔗🧹
-// @name:fr      Nettoyeur d’URL produit Amazon.co.jp 🔗🧹
-// @name:es      Limpiador de URL de productos de Amazon.co.jp 🔗🧹
-// @name:de      Amazon.co.jp Produkt-URL-Reiniger 🔗🧹
-// @name:pt-BR   Limpador de URL de produtos da Amazon.co.jp 🔗🧹
-// @name:ru      Очистка URL товаров Amazon.co.jp 🔗🧹
-// @version      1.0.0
-// @description         Amazon.co.jpの商品URLを /dp/ASIN に正規化。トラッキングを削除し、必要なら許可したクエリ（例: tag）のみ保持。SPA遷移・履歴API・anchorクリックもフックして常にクリーンなURLを維持。
-// @description:ja      Amazon.co.jpの商品URLを /dp/ASIN に正規化。トラッキングを削除し、必要なら許可したクエリ（例: tag）のみ保持。SPA遷移・履歴API・anchorクリックもフックして常にクリーンなURLを維持。
-// @description:en      Canonicalize Amazon.co.jp product URLs to /dp/ASIN. Remove tracking and optionally keep allowed params (e.g., tag). Hooks SPA navigation, History API, and anchor clicks to keep URLs clean.
-// @description:zh-CN   将 Amazon.co.jp 商品链接规范化为 /dp/ASIN，移除跟踪参数；可保留允许参数（如 tag）。适配 SPA、History API 与链接点击。
-// @description:zh-TW   將 Amazon.co.jp 商品連結正規化為 /dp/ASIN，移除追蹤參數；可保留允許的參數（如 tag）。支援 SPA、History API 與連結點擊。
-// @description:ko      Amazon.co.jp 상품 URL을 /dp/ASIN 으로 정규화하고 트래킹 파라미터를 제거합니다. 필요 시 허용된 파라미터(tag 등)만 유지. SPA/History API/앵커 클릭 대응.
-// @description:fr      Canonise les URL de produits Amazon.co.jp en /dp/ASIN, supprime le tracking et peut garder certains paramètres (ex.: tag). Compatible navigation SPA et History API.
-// @description:es      Canonicaliza las URL de productos de Amazon.co.jp a /dp/ASIN. Elimina el tracking y puede conservar parámetros permitidos (p. ej., tag). Funciona con SPA/History API.
-// @description:de      Kanonisiert Amazon.co.jp-Produkt-URLs zu /dp/ASIN, entfernt Tracking und kann erlaubte Parameter (z. B. tag) beibehalten. Funktioniert mit SPA/History API.
-// @description:pt-BR   Canoniza URLs de produtos da Amazon.co.jp para /dp/ASIN. Remove tracking e pode manter parâmetros permitidos (ex.: tag). Suporta SPA/History API.
-// @description:ru      Приводит ссылки товаров Amazon.co.jp к /dp/ASIN, удаляет трекинг; при необходимости сохраняет разрешённые параметры (например, tag). Поддержка SPA/History API.
+// @name         Amazon.co.jp URL Cleaner 🔗🧹
+// @name:ja      Amazon.co.jp URLクリーナー 🔗🧹
+// @name:en      Amazon.co.jp URL Cleaner 🔗🧹
+// @name:zh-CN   Amazon.co.jp 链接清理器 🔗🧹
+// @name:zh-TW   Amazon.co.jp 連結清理器 🔗🧹
+// @name:ko      Amazon.co.jp URL 클리너 🔗🧹
+// @name:fr      Nettoyeur d’URL Amazon.co.jp 🔗🧹
+// @name:es      Limpiador de URL de Amazon.co.jp 🔗🧹
+// @name:de      Amazon.co.jp-URL-Cleaner 🔗🧹
+// @name:pt-BR   Limpador de URL da Amazon.co.jp 🔗🧹
+// @name:ru      Очистка URL Amazon.co.jp 🔗🧹
 // @namespace    https://github.com/koyasi777/amazon-jp-url-cleaner
+// @version      2.0.0
+// @description  Amazon.co.jp URL cleaner userscript that automatically normalizes Amazon Japan links by stripping /ref= segments and tracking query parameters to create short, clean URLs. On product pages it rebuilds links into canonical /dp/ASIN form, while on search and other pages it keeps only functional parameters so filters and features continue to work. Hooks History/Location APIs, link clicks, and SPA navigation to keep URLs readable, share-friendly, and more privacy-respecting at all times.
+// @description:ja   Amazon.co.jp 向けの URL クリーナー Userscript です。/ref= やトラッキング用クエリなどの不要なパラメータを自動で削除し、短くクリーンな URL に正規化します。商品ページでは /dp/ASIN 形式に再構築し、検索結果や各種ページでは必要な検索条件・機能パラメータだけを残して動作を維持します。History/Location API とリンククリック、SPA 遷移をフックして、常に読みやすく共有しやすい、プライバシー配慮の URL を保ちます。
+// @description:en   Amazon.co.jp URL cleaner userscript that automatically normalizes Amazon Japan URLs by stripping /ref= segments and tracking query parameters to create short, clean links. On product pages it rebuilds URLs into canonical /dp/ASIN form, while on search and other pages it keeps only functional parameters so filters and features continue to work. Hooks History/Location APIs, link clicks, and SPA navigation to keep URLs readable, share-friendly, and more privacy-respecting at all times.
+// @description:zh-CN  面向 Amazon.co.jp 的 URL 清理用户脚本，自动规范化链接，移除 /ref= 片段和各种跟踪查询参数，将网址压缩为简短干净的 URL。商品页统一转换为规范的 /dp/ASIN 形式，搜索结果等页面则仅保留必要的功能参数，保证筛选与功能不受影响。通过拦截 History/Location API、链接点击和 SPA 路由，持续保持网址可读、便于分享并更注重隐私。
+// @description:zh-TW  面向 Amazon.co.jp 的 URL 清理 Userscript，自動正規化網址，移除 /ref= 段落與各種追蹤查詢參數，將網址壓縮成簡短乾淨的連結。商品頁會統一轉換為標準的 /dp/ASIN 形式，搜尋結果等頁面則只保留必要的功能參數，以維持篩選與功能正常。透過攔截 History/Location API、連結點擊與 SPA 導覽，隨時保持網址易讀、好分享且更重視隱私。
+// @description:ko    Amazon.co.jp 전용 URL 클리너 유저스크립트로, /ref= 구간과 각종 추적용 쿼리 파라미터를 자동으로 제거하여 짧고 깔끔한 링크로 정규화합니다. 상품 페이지는 표준 /dp/ASIN 형식으로 재구성하고, 검색 및 기타 페이지에서는 필요한 기능 파라미터만 남겨 필터와 기능이 그대로 동작하도록 합니다. History/Location API 와 링크 클릭, SPA 내비게이션을 후킹하여 항상 읽기 쉽고 공유하기 편하며 프라이버시를 더 잘 보호하는 URL 을 유지합니다。
+// @description:fr    Userscript de nettoyage d’URL pour Amazon.co.jp qui normalise automatiquement les liens Amazon Japan en supprimant les segments /ref= et les paramètres de suivi afin d’obtenir des URL courtes et propres. Les pages produit sont reconstruites au format canonique /dp/ASIN, tandis que les pages de recherche et de navigation ne conservent que les paramètres fonctionnels pour préserver filtres et fonctionnalités. Intercepte les API History/Location, les clics sur les liens et la navigation SPA pour garder en permanence des URL lisibles, faciles à partager et plus respectueuses de la confidentialité.
+// @description:es    Userscript limpiador de URL para Amazon.co.jp que normaliza automáticamente los enlaces de Amazon Japón eliminando los segmentos /ref= y los parámetros de seguimiento para crear URL cortas y limpias. En las páginas de producto reconstruye la URL en el formato canónico /dp/ASIN, y en las páginas de búsqueda u otras solo mantiene los parámetros funcionales para que los filtros y funciones sigan funcionando. Engancha las API de History/Location, los clics en enlaces y la navegación SPA para mantener siempre URL legibles, fáciles de compartir y más respetuosas con la privacidad.
+// @description:de    Amazon.co.jp-URL-Cleaner-Userscript, das Amazon-Japan-Links automatisch normalisiert, indem /ref=-Segmente und Tracking-Parameter entfernt werden, sodass kurze, saubere URLs entstehen. Produktseiten werden in die kanonische Form /dp/ASIN umgebaut, während auf Such- und anderen Seiten nur funktionale Parameter erhalten bleiben, damit Filter und Funktionen weiterarbeiten. Hakt sich in History-/Location-APIs, Link-Klicks und SPA-Navigation ein, um URLs dauerhaft lesbar, teilfreundlich und datenschutzfreundlicher zu halten.
+// @description:pt-BR Userscript limpador de URL para a Amazon.co.jp que normaliza automaticamente os links da Amazon Japan removendo segmentos /ref= e parâmetros de rastreamento para gerar URLs curtas e limpas. Em páginas de produto, reconstrói a URL no formato canônico /dp/ASIN; em páginas de busca e navegação mantém apenas os parâmetros funcionais para que filtros e recursos continuem funcionando. Conecta-se às APIs History/Location, aos cliques em links e à navegação SPA para manter sempre URLs legíveis, fáceis de compartilhar e mais amigáveis à privacidade.
+// @description:ru    Пользовательский скрипт-очиститель URL для Amazon.co.jp, который автоматически нормализует ссылки Amazon Japan, удаляя сегменты /ref= и трекинговые параметры, чтобы получать короткие и чистые URL. Для товарных страниц заново формирует канонический вид /dp/ASIN, а на страницах поиска и навигации сохраняет только функциональные параметры, чтобы фильтры и функции продолжали работать. Перехватывает History/Location API, клики по ссылкам и SPA-навигацию, постоянно поддерживая URL читаемыми, удобными для обмена и более приватными.
 // @author       koyasi777
 // @license      MIT
 // @homepageURL  https://github.com/koyasi777/amazon-jp-url-cleaner
@@ -30,13 +30,7 @@
 // @icon         https://www.amazon.co.jp/favicon.ico
 // @downloadURL  https://raw.githubusercontent.com/koyasi777/amazon-jp-url-cleaner/main/amazon-jp-url-cleaner.user.js
 // @updateURL    https://raw.githubusercontent.com/koyasi777/amazon-jp-url-cleaner/main/amazon-jp-url-cleaner.user.js
-// @match        https://www.amazon.co.jp/dp/*
-// @match        https://www.amazon.co.jp/*/dp/*
-// @match        https://www.amazon.co.jp/-/*/dp/*
-// @match        https://www.amazon.co.jp/gp/product/*
-// @match        https://www.amazon.co.jp/-/*/gp/product/*
-// @match        https://www.amazon.co.jp/gp/aw/d/*
-// @match        https://www.amazon.co.jp/-/*/gp/aw/d/*
+// @match        https://www.amazon.co.jp/*
 // @grant        none
 // @run-at       document-start
 // @noframes
@@ -45,78 +39,150 @@
 (function () {
   'use strict';
 
-  // 許可するクエリキー（例: アフィリエイトなら ['tag']）。完全にクリーンにするなら [] のままでOK。
-  // 例:
-  //  - アフィリエイト: ['tag']
-  //  - 言語維持:       ['language']   // 例: ?language=en_US
-  //  - 両方:           ['tag','language']
-  const KEEP_KEYS = [];
+  // --- Configuration -----------------------------------------
 
-  // --- helpers ---------------------------------------------------------------
+  // 【Mode A: 商品ページ用】許可するクエリキー（ホワイトリスト）
+  // 必要なパラメータ（アフィリエイトのtagや言語設定など）のみをここに定義。
+  // 空配列 [] なら、/dp/ASIN だけの最もクリーンなURLになります。
+  const PRODUCT_ALLOW_KEYS = [];
+
+  // 【Mode B: その他ページ用】削除対象パラメータ（ブラックリスト）
+  // 検索結果やトップページ等で「機能は壊さずにトラッキングだけ消す」ためのリスト。
+  const TRACKING_BLACKLIST = new Set([
+    'ref', 'ref_', 'pf_rd_r', 'pf_rd_p', 'pf_rd_m', 'pf_rd_s', 'pf_rd_t', 'pf_rd_i',
+    'pd_rd_r', 'pd_rd_w', 'pd_rd_wg', 'qid', 'sr', 'keywords', // keywordsは検索維持のため例外判定あり
+    'dchild', 'crid', 'sprefix', 'field-keywords', 'hvpos', 'hvexid', 'hvnetw',
+    'hvrand', 'hvqmt', 'hvbmt', 'hvdev', 'hvdvcmdl', 'hvlocint', 'hvlocphy',
+    'hvtargid', 'hydadcr', '_encoding','ie',
+  ]);
+
+  // 上記ブラックリストに含まれていても、検索結果ページ等で機能維持のために残すべきキー
+  const FUNCTIONAL_KEYS_ON_SEARCH = new Set(['keywords', 'k', 'rh', 'page', 'sort', 'node']);
+
+  // --- Helpers ---------------------------------------------------------------
+
+  /**
+   * 安全なURLオブジェクト生成
+   * URL.canParse が使えない環境への配慮も含め、パース不可なら例外を投げるかnullを返す
+   */
   function toURL(input) {
     const s = String(input);
-    if (typeof URL.canParse === 'function' && !URL.canParse(s, location.href)) {
-      throw new TypeError('Unparsable URL');
+    // ベースURL解決を厳密に行う
+    try {
+      return new URL(s, location.href);
+    } catch {
+      throw new TypeError(`Unparsable URL: ${s}`);
     }
-    return input instanceof URL ? input : new URL(s, location.href);
   }
 
-  // --- Canonicalizer ---------------------------------------------------------
+  /**
+   * パスからASINを抽出
+   * /dp/, /gp/product/, /gp/aw/d/ に対応
+   */
+  function extractASIN(pathname) {
+    const m = pathname.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})(?:[/?]|$)/i);
+    return m ? m[1].toUpperCase() : null;
+  }
+
+  // --- Core Logic: The Dual-Mode Canonicalizer -------------------------------
+
   function canonicalize(input) {
     let url;
     try {
       url = toURL(input);
     } catch {
-      // URL 構築に失敗した場合はそのまま返す
+      // パース不能な文字列は触らず返す（安全性優先）
       return String(input);
     }
 
-    // ★ amazon.co.jp 以外のホストは触らない（外部リンク安全弁）
+    // Safety check: amazon.co.jp 以外は絶対に触らない
     if (!/\.amazon\.co\.jp$/i.test(url.hostname)) return url.href;
 
-    // dp / gp/product / gp/aw/d の何れかから ASIN を抽出
-    const m = url.pathname.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})(?:[/?]|$)/i);
-    if (!m) return url.href; // 対象外は触らない
+    const asin = extractASIN(url.pathname);
 
-    const asin = m[1].toUpperCase();
+    // -------------------------------------------------------------------------
+    // Strategy A: 商品ページ (Strict Reconstruction)
+    // -------------------------------------------------------------------------
+    if (asin) {
+      // 言語プレフィックス（/-/en/ や /-/es/ 等）があれば保持
+      const langPrefixMatch = url.pathname.match(/^\/-\/[^/]+\//);
+      const prefix = langPrefixMatch ? langPrefixMatch[0].slice(0, -1) : '';
 
-    // 言語プレフィックス（/-/en/ や /-/es/ など）があれば保持
-    const langPrefixMatch = url.pathname.match(/^\/-\/[^/]+\//);
-    const prefix = langPrefixMatch ? langPrefixMatch[0].slice(0, -1) : ''; // '/-/en'
+      // 許可されたクエリだけをホワイトリスト方式で再構築
+      const keptParams = new URLSearchParams();
+      if (PRODUCT_ALLOW_KEYS.length) {
+        const allow = new Set(PRODUCT_ALLOW_KEYS.map(k => k.toLowerCase()));
+        for (const [k, v] of url.searchParams) {
+          if (allow.has(k.toLowerCase())) keptParams.append(k, v);
+        }
+      }
+      const qs = keptParams.toString();
 
-    // 許可されたクエリだけ残す（既定では全削除、重複値も維持）
-    const kept = new URLSearchParams();
-    if (KEEP_KEYS.length) {
-      const allow = new Set(KEEP_KEYS.map(k => k.toLowerCase()));
-      for (const [k, v] of url.searchParams) {
-        if (allow.has(k.toLowerCase())) kept.append(k, v);
+      // フラグメント(#)は維持しつつ、正規化URLを返す
+      return `${url.origin}${prefix}/dp/${asin}${qs ? `?${qs}` : ''}${url.hash}`;
+    }
+
+    // -------------------------------------------------------------------------
+    // Strategy B: その他ページ (General Cleaning)
+    // -------------------------------------------------------------------------
+    // 検索結果、トップページ、アカウントサービス等は、ブラックリストにあるゴミだけを除去する。
+
+    // 1. Path Cleaning: URLパス内の /ref=... をカット
+    if (url.pathname.includes('/ref=')) {
+      url.pathname = url.pathname.split('/ref=')[0];
+      if (url.pathname === '') url.pathname = '/';
+    }
+
+    // 2. Query Cleaning: トラッキングパラメータの除去
+    const isSearchPage = url.pathname.startsWith('/s');
+    const keys = Array.from(url.searchParams.keys());
+
+    for (const key of keys) {
+      const lowerKey = key.toLowerCase();
+
+      // ref=... は全ページで無条件削除
+      if (lowerKey === 'ref' || lowerKey.startsWith('ref_')) {
+        url.searchParams.delete(key);
+        continue;
+      }
+
+      // ブラックリスト判定
+      if (
+        lowerKey.startsWith('pf_rd_') ||
+        lowerKey.startsWith('pd_rd_') ||
+        TRACKING_BLACKLIST.has(lowerKey)
+      ) {
+        // 例外: 検索ページで機能的に必要なキーなら維持 (例: keywords)
+        if (isSearchPage && FUNCTIONAL_KEYS_ON_SEARCH.has(lowerKey)) continue;
+
+        url.searchParams.delete(key);
       }
     }
-    const qs = kept.toString();
 
-    // フラグメント（#...）は常に保持
-    return `${url.origin}${prefix}/dp/${asin}${qs ? `?${qs}` : ''}${url.hash}`;
+    return url.href;
   }
+
+  // --- Execution & Hooks: Robustness ---------------------------------
 
   function normalizeHere() {
     const target = canonicalize(location.href);
     if (target !== location.href) {
       try {
-        // 既存の history.state / document.title を保持したまま URL だけ置換
+        // history.state を維持しつつ URL のみ置換
         history.replaceState(history.state, document.title, target);
       } catch {
-        // 後方互換フォールバック
+        // フォールバック
         history.replaceState(null, '', target);
       }
-      return true;
+      return true; // 変更あり
     }
-    return false;
+    return false; // 変更なし
   }
 
-  // --- 1) 初期正規化（超早期） -----------------------------------------------
+  // 1) 初期実行（最速タイミング）
   normalizeHere();
 
-  // --- 2) history API を正しくフック（URLを明示的に差し替えて呼ぶ） ----------
+  // 2) History API Hook
   (function hookHistory() {
     const _push = history.pushState;
     const _replace = history.replaceState;
@@ -126,7 +192,6 @@
         try { url = canonicalize(url); } catch {}
         return _push.call(this, state, title, url);
       }
-      // 第3引数未指定の場合は2引数で呼ぶ
       return _push.call(this, state, title);
     };
 
@@ -135,22 +200,22 @@
         try { url = canonicalize(url); } catch {}
         return _replace.call(this, state, title, url);
       } else {
-        // url 未指定でも現在URLを正規化
+        // 引数なしreplaceでも現在地を浄化
         const target = canonicalize(location.href);
         if (target !== location.href) {
           return _replace.call(this, state, title, target);
         }
-        // 第3引数未指定の素通し
         return _replace.call(this, state, title);
       }
     };
 
+    // SPAバック/フォワード時の再正規化
     window.addEventListener('popstate', normalizeHere, { capture: true });
   })();
 
-  // --- 3) location.assign/replace のフック（フルナビゲーション経路も矯正） ----
+  // 3) Location API Hook
   (function hookLocation() {
-    // 同一URLなら何もしない（無駄なリロード回避）
+    // ユーティリティ: 同一URLならリロードを防ぐ
     function safeCallAssignReplace(fn, urlLike) {
       try {
         const c = canonicalize(urlLike);
@@ -163,7 +228,7 @@
 
     try {
       const L = Location.prototype;
-      // assign
+      // assignフック
       try {
         const descA = Object.getOwnPropertyDescriptor(L, 'assign');
         if (!descA || descA.writable) {
@@ -173,7 +238,8 @@
           };
         }
       } catch {}
-      // replace
+
+      // replaceフック
       try {
         const descR = Object.getOwnPropertyDescriptor(L, 'replace');
         if (!descR || descR.writable) {
@@ -183,57 +249,72 @@
           };
         }
       } catch {}
+
     } catch {
-      // prototype を触れない環境向けフォールバック（インスタンス側）
+      // prototype操作がブロックされた場合のインスタンス直接書き換え
       try {
         const loc = window.location;
         const _assign2 = loc.assign.bind(loc);
         const _replace2 = loc.replace.bind(loc);
-        loc.assign = (url) => safeCallAssignReplace.call(loc, _assign2, url);
-        loc.replace = (url) => safeCallAssignReplace.call(loc, _replace2, url);
+        Object.defineProperty(loc, 'assign', {
+          value: (url) => safeCallAssignReplace.call(loc, _assign2, url)
+        });
+        Object.defineProperty(loc, 'replace', {
+          value: (url) => safeCallAssignReplace.call(loc, _replace2, url)
+        });
       } catch {}
     }
   })();
 
-  // --- 3.5) アンカークリックの事前正規化（遷移前に href をクリーン化） -------
+  // 3.5) Click Event Hook
   (function preNormalizeAnchorClicks() {
     document.addEventListener('click', (e) => {
       if (e.defaultPrevented) return;
       if (e.button !== 0) return; // 左クリックのみ
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // 修飾キー除外
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
       const a = e.target && e.target.closest && e.target.closest('a[href]');
       if (!a) return;
 
-      // ★ ユーザ意図尊重: download / 新規タブ / rel=external は改変しない
+      // 除外: ダウンロード、別タブ、外部リンク属性
       if (a.hasAttribute('download')) return;
       if (a.target === '_blank') return;
       if (/\bexternal\b/i.test(a.rel || '')) return;
 
       try {
         const u = new URL(a.href, location.href);
-        // ★ http(s) 以外は触らない
+        // http/https 以外は無視
         if (!/^https?:$/i.test(u.protocol)) return;
-        // ★ amazon.co.jp 以外は触らない
+        // Amazon以外は無視
         if (!/\.amazon\.co\.jp$/i.test(u.hostname)) return;
 
         const c = canonicalize(u);
-        if (c !== a.href) a.href = c; // 置換して標準ナビゲーションに任せる
+        // クリーンなURLに書き換えてから遷移させる
+        if (c !== a.href) a.href = c;
       } catch {}
     }, { capture: true });
   })();
 
-  // --- 4) 軽量ウォッチドッグ（短時間だけ監視して最後の付け直しも即矯正） -----
+  // 4) Watchdog
+  // Amazonの遅延ロードによるURL再汚染に対抗するため、変更が止まるまで監視する。
   (function watchdog() {
-    let ticks = 0, stable = 0;
+    let ticks = 0;
+    let stable = 0; // 連続して変更がなかった回数
+
     const id = setInterval(() => {
       const changed = normalizeHere();
+      // 変更があったらstableカウントをリセット、なければ加算
       stable = changed ? 0 : (stable + 1);
-      // 連続8回「変化なし」 or 約10秒経過で自動終了（250ms間隔）
-      if (stable >= 8 || (++ticks > 40 && !changed)) clearInterval(id);
+
+      // 終了条件:
+      // 1. 8回連続(約2秒)変更がない = 安定したとみなす
+      // 2. または合計40回(約10秒)経過しても終わらない = 強制終了
+      if (stable >= 8 || (++ticks > 40 && !changed)) {
+        clearInterval(id);
+      }
     }, 250);
 
-    // ページ表示タイミング/完全読込でも念のため
+    // 補助トリガー
     document.addEventListener('DOMContentLoaded', normalizeHere, { once: true });
     window.addEventListener('load', normalizeHere, { once: true });
     document.addEventListener('visibilitychange', () => {
