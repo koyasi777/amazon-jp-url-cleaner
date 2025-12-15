@@ -11,7 +11,7 @@
 // @name:pt-BR   Limpador de URL da Amazon.co.jp 🔗🧹
 // @name:ru      Очистка URL Amazon.co.jp 🔗🧹
 // @namespace    https://github.com/koyasi777/amazon-jp-url-cleaner
-// @version      2.0.1
+// @version      2.0.2
 // @description  Amazon.co.jp 用URLクリーナー。パス中の /ref= や一般的なトラッキング用パラメータを削除します。商品ページは /dp/ASIN に正規化し、それ以外は既知の追跡要素のみ除去して他のパラメータは保持（フィルタ等を維持）。History/Location・クリック・SPA遷移をフックし、URLを常に読みやすくプライバシー配慮に保ちます。
 // @description:ja   Amazon.co.jp 用URLクリーナー。パス中の /ref= や一般的なトラッキング用パラメータを削除します。商品ページは /dp/ASIN に正規化し、それ以外は既知の追跡要素のみ除去して他のパラメータは保持（フィルタ等を維持）。History/Location・クリック・SPA遷移をフックし、URLを常に読みやすくプライバシー配慮に保ちます。
 // @description:en   Amazon.co.jp URL cleaner userscript. Removes /ref= path segments and common tracking params. Product pages normalize to /dp/ASIN; other pages remove known tracking while keeping other params so filters work. Hooks History/Location, link clicks, and SPA navigation to keep URLs readable and privacy-friendly.
@@ -135,6 +135,12 @@
 
     // 2. Query Cleaning: トラッキングパラメータの除去
     const isSearchPage = url.pathname.startsWith('/s');
+
+    // /stores/ 系だけ lp_asin を落とす（流入元ASINの文脈/計測用途になりがち）
+    const isStorePage = url.pathname.startsWith('/stores/');
+    if (isStorePage) {
+      url.searchParams.delete('lp_asin');
+    }
 
     // 検索ページの旧パラメータを正規形へ寄せる（検索語が消えるのを防ぐ）
     if (isSearchPage) {
