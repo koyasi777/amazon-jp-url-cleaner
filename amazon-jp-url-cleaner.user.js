@@ -11,7 +11,7 @@
 // @name:pt-BR   Limpador de URL da Amazon.co.jp 🔗🧹
 // @name:ru      Очистка URL Amazon.co.jp 🔗🧹
 // @namespace    https://github.com/koyasi777/amazon-jp-url-cleaner
-// @version      2.0.0
+// @version      2.0.1
 // @description  Amazon.co.jp 用URLクリーナー。パス中の /ref= や一般的なトラッキング用パラメータを削除します。商品ページは /dp/ASIN に正規化し、それ以外は既知の追跡要素のみ除去して他のパラメータは保持（フィルタ等を維持）。History/Location・クリック・SPA遷移をフックし、URLを常に読みやすくプライバシー配慮に保ちます。
 // @description:ja   Amazon.co.jp 用URLクリーナー。パス中の /ref= や一般的なトラッキング用パラメータを削除します。商品ページは /dp/ASIN に正規化し、それ以外は既知の追跡要素のみ除去して他のパラメータは保持（フィルタ等を維持）。History/Location・クリック・SPA遷移をフックし、URLを常に読みやすくプライバシー配慮に保ちます。
 // @description:en   Amazon.co.jp URL cleaner userscript. Removes /ref= path segments and common tracking params. Product pages normalize to /dp/ASIN; other pages remove known tracking while keeping other params so filters work. Hooks History/Location, link clicks, and SPA navigation to keep URLs readable and privacy-friendly.
@@ -135,6 +135,16 @@
 
     // 2. Query Cleaning: トラッキングパラメータの除去
     const isSearchPage = url.pathname.startsWith('/s');
+
+    // 検索ページの旧パラメータを正規形へ寄せる（検索語が消えるのを防ぐ）
+    if (isSearchPage) {
+      // field-keywords を k に正規化（k が無いときだけ）
+      if (!url.searchParams.has('k') && url.searchParams.has('field-keywords')) {
+        url.searchParams.set('k', url.searchParams.get('field-keywords') || '');
+        url.searchParams.delete('field-keywords');
+      }
+    }
+
     const keys = Array.from(url.searchParams.keys());
 
     for (const key of keys) {
